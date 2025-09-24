@@ -1,40 +1,284 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-dark">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Skullcapz Dev Lab</title>
-  <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Fonts (Heavy Metal headline + readable body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- App Manifest hooks (optional, for LevelUp: PWA) -->
+  <link rel="manifest" href="assets/site.webmanifest" />
+  <meta name="theme-color" content="#0b0b0f" />
+
+  <!-- Stylesheet (we’ll add contents next) -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Open Graph (nice previews when sharing your Pages link) -->
+  <meta property="og:title" content="Skullcapz Dev Lab" />
+  <meta property="og:description" content="LiveLab: Build interactive features with JS for the Skullcapz site." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cashmerecode.github.io/WD-LL9-demo/" />
+  <meta property="og:image" content="assets/og-card.png" />
 </head>
-<body>
-  <h1>🎸 Welcome to Skullcapz Dev Lab</h1>
 
-  <!-- Setlist Generator -->
-  <section id="setlist-section">
-    <h2>🔥 Setlist Generator</h2>
-    <button id="generateSetlist">Generate Setlist</button>
-    <ul id="setlist"></ul>
+<body data-page="home" class="no-js">
+  <noscript>
+    <div class="noscript-banner" role="status" aria-live="polite">
+      JavaScript is required to experience the full Skullcapz Dev Lab. Please enable JS.
+    </div>
+  </noscript>
+
+  <!-- SVG Symbols (icons) -->
+  <svg aria-hidden="true" class="svg-sprites">
+    <symbol id="ico-skull" viewBox="0 0 24 24">
+      <path d="M12 2c-4.4 0-8 3.2-8 7.2 0 2.5 1.4 4.7 3.4 6v2.3c0 .8.7 1.5 1.5 1.5h1.1c.6 0 1-.4 1-1v-1h2v1c0 .6.4 1 1 1h1.1c.8 0 1.5-.7 1.5-1.5v-2.3c2-1.3 3.4-3.5 3.4-6C20 5.2 16.4 2 12 2Zm-4 7.5a1.8 1.8 0 1 1 3.6 0A1.8 1.8 0 0 1 8 9.5Zm6.4 0a1.8 1.8 0 1 1 3.6 0 1.8 1.8 0 0 1-3.6 0Z"/>
+    </symbol>
+    <symbol id="ico-bolt" viewBox="0 0 24 24">
+      <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>
+    </symbol>
+    <symbol id="ico-menu" viewBox="0 0 24 24">
+      <path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/>
+    </symbol>
+    <symbol id="ico-close" viewBox="0 0 24 24">
+      <path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+    </symbol>
+  </svg>
+
+  <!-- Topbar -->
+  <header class="topbar" data-sticky>
+    <button class="icon-btn" id="navToggle" aria-label="Open menu" aria-controls="siteNav" aria-expanded="false">
+      <svg><use href="#ico-menu"/></svg>
+    </button>
+    <a class="brand" href="#" aria-label="Skullcapz Home">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-skull"/></svg>
+      <span class="brand-text">Skullcapz</span>
+    </a>
+    <nav id="siteNav" class="site-nav" aria-label="Primary">
+      <a href="#setlist-section">Setlist</a>
+      <a href="#timer-section">Countdown</a>
+      <a href="#team-features">Features</a>
+      <a href="#about">About</a>
+    </nav>
+
+    <div class="topbar-actions">
+      <!-- Theme toggle (LevelUp: prefers-color-scheme + user toggle) -->
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
+        <svg><use href="#ico-bolt"/></svg>
+      </button>
+      <!-- “Install” button placeholder for PWA LevelUp -->
+      <button class="btn ghost" id="installBtn" hidden>Install App</button>
+    </div>
+  </header>
+
+  <!-- Hero / Stage -->
+  <section class="hero" id="hero" aria-label="Stage intro">
+    <div class="hero-inner">
+      <h1 class="display">
+        <span class="fx-spark">🎸</span>
+        <span>Welcome to Skullcapz Dev Lab</span>
+      </h1>
+      <p class="lede">Build interactive features with JavaScript. Keep it heavy. Keep it tight.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#setlist-section">Start with Setlist</a>
+        <a class="btn" href="#team-features">Jump to Team Zone</a>
+      </div>
+    </div>
+    <!-- Decorative lighting layers (styled later) -->
+    <div class="stage-lights" aria-hidden="true">
+      <div class="beam beam-left"></div>
+      <div class="beam beam-right"></div>
+      <div class="beam beam-center"></div>
+    </div>
   </section>
 
-  <!-- Countdown Timer (initially hidden) -->
-  <section id="timer-section" class="hidden">
-    <h2>⏳ Countdown to Tour Kickoff</h2>
-    <div id="countdown">Loading...</div>
-  </section>
+  <main id="main" tabindex="-1">
+    <!-- Setlist Generator -->
+    <section id="setlist-section" class="block">
+      <header class="block-head">
+        <h2 class="block-title"><svg class="inline-ico"><use href="#ico-bolt"/></svg> Setlist Generator</h2>
+        <p class="block-sub">Shuffle the night’s order—every refresh is a new vibe.</p>
+      </header>
 
-  <!-- Team Feature Area -->
-  <section id="team-features">
-    <h2>🛠️ Team Feature Zone</h2>
-    <p>Each team will build one interactive feature below:</p>
+      <div class="card">
+        <div class="row gap">
+          <button id="generateSetlist" class="btn primary">Generate Setlist</button>
 
-    <div id="vipWinner"></div>
-    <div id="fanFavorite"></div>
-    <div id="tourHighlight"></div>
-    <div id="nextTourStop"></div>
-    <div id="emailCheck"></div>
-    <div id="bioToggle"></div>
-  </section>
+          <!-- LevelUp: seed input so fans can add songs -->
+          <label class="visually-hidden" for="songSeed">Add custom songs</label>
+          <input id="songSeed" class="input" type="text" placeholder="Add songs, comma-separated (optional)" />
+        </div>
 
-  <script src="script.js"></script>
+        <ul id="setlist" class="list setlist" aria-live="polite" aria-label="Tonight's setlist"></ul>
+
+        <!-- LevelUp: export/download -->
+        <div class="row end">
+          <button id="copySetlist" class="btn ghost">Copy Setlist</button>
+          <button id="downloadSetlist" class="btn ghost">Download .txt</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Countdown Timer -->
+    <section id="timer-section" class="block">
+      <header class="block-head">
+        <h2 class="block-title">Countdown to Tour Kickoff</h2>
+        <p class="block-sub">Real-time ticker to the next show.</p>
+      </header>
+
+      <div class="card">
+        <div class="grid g-2">
+          <div>
+            <div id="countdown" class="countdown" role="timer" aria-live="polite">Loading…</div>
+          </div>
+          <form id="countdownForm" class="stack">
+            <label for="kickoffInput" class="label">Kickoff date/time</label>
+            <input id="kickoffInput" type="datetime-local" class="input" />
+            <button type="submit" class="btn">Set Countdown</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team Feature Zone -->
+    <section id="team-features" class="block">
+      <header class="block-head">
+        <h2 class="block-title">Team Feature Zone</h2>
+        <p class="block-sub">Each team builds one interactive feature below. Go wild, stay accessible.</p>
+      </header>
+
+      <div class="feature-grid">
+        <!-- VIP Ticket Winner -->
+        <article class="card feature" id="vipFeature">
+          <h3 class="feature-title">🎟️ VIP Ticket Winner</h3>
+          <p class="muted small">Pick a random name from email entries.</p>
+          <div class="stack">
+            <label for="vipInput" class="label">Comma-separated names</label>
+            <input id="vipInput" class="input" type="text" placeholder="Alex, Bri, Cam, Devon" />
+            <div class="row gap">
+              <button id="vipPick" class="btn primary">Pick Winner</button>
+              <button id="vipClear" class="btn ghost">Clear</button>
+            </div>
+          </div>
+          <output id="vipResult" class="result" aria-live="polite"></output>
+        </article>
+
+        <!-- Fan Favorite Showdown -->
+        <article class="card feature" id="voteFeature">
+          <h3 class="feature-title">🗳️ Fan Favorite Showdown</h3>
+          <p class="muted small">Vote on the anthem of the night. Persist with localStorage.</p>
+          <div class="vote-list" role="group" aria-label="Vote buttons">
+            <button class="btn pill vote" data-song="Neon Howl">Vote: Neon Howl</button>
+            <span class="counter" id="v-Neon Howl" aria-live="polite">0</span>
+
+            <button class="btn pill vote" data-song="Echoes in Chrome">Vote: Echoes in Chrome</button>
+            <span class="counter" id="v-Echoes in Chrome" aria-live="polite">0</span>
+          </div>
+          <div class="row gap">
+            <button id="voteReset" class="btn ghost">Reset Votes</button>
+            <button id="voteShare" class="btn ghost">Share Results</button>
+          </div>
+        </article>
+
+        <!-- Tour Date Spotlight -->
+        <article class="card feature" id="spotlightFeature">
+          <h3 class="feature-title">📍 Tour Date Spotlight</h3>
+          <p class="muted small">Click a city to reveal venue + date.</p>
+          <ul id="cityList" class="list buttons" aria-label="Tour cities">
+            <!-- Cities injected by JS -->
+          </ul>
+          <div id="cityDetail" class="detail" aria-live="polite"></div>
+        </article>
+
+        <!-- On the Road Again (next tour stop) -->
+        <article class="card feature" id="nextStopFeature">
+          <h3 class="feature-title">🚌 On the Road Again</h3>
+          <p class="muted small">Show the next tour stop based on today’s date.</p>
+          <output id="nextStop" class="result" aria-live="polite"></output>
+          <div class="row gap">
+            <button id="recalcStop" class="btn">Recalculate</button>
+            <button id="addStop" class="btn ghost">Add Stop</button>
+          </div>
+        </article>
+
+        <!-- Entry Checkpoint (email validation) -->
+        <article class="card feature" id="emailFeature">
+          <h3 class="feature-title">🛂 Entry Checkpoint</h3>
+          <p class="muted small">Validate email input with clear feedback.</p>
+          <div class="row gap wrap">
+            <label class="visually-hidden" for="emailInput">Email</label>
+            <input id="emailInput" class="input" type="email" placeholder="you@example.com" inputmode="email" />
+            <button id="emailValidate" class="btn primary">Validate</button>
+          </div>
+          <output id="emailMsg" class="result" aria-live="polite"></output>
+        </article>
+
+        <!-- Band Bio Toggle -->
+        <article class="card feature" id="bioFeature">
+          <h3 class="feature-title">🧑‍🎤 Band Bio Toggle</h3>
+          <p class="muted small">Show/hide the bio with smooth motion (respects reduced motion).</p>
+          <button id="bioBtn" class="btn">Show Bio</button>
+          <p id="bioText" class="bio hidden" aria-hidden="true">
+            Skullcapz fuses desert fuzz, neon synth, and arena riffs. Est. 2021 in Las Vegas.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- About / Credits -->
+    <section id="about" class="block">
+      <header class="block-head">
+        <h2 class="block-title">About the Lab</h2>
+        <p class="block-sub">Built for the Global Career Accelerator’s Coding for Web course.</p>
+      </header>
+      <div class="card prose">
+        <p>
+          This sandbox is where we practice strings, functions, conditionals, DOM updates, accessibility,
+          and AI-assisted debugging. Keep your code readable, keyboard-friendly, and performant.
+        </p>
+        <ul class="checklist">
+          <li>Keyboard-navigable controls</li>
+          <li>Color-contrast safe (we’ll enforce in CSS)</li>
+          <li>ARIA live regions for dynamic content</li>
+          <li>Reduced-motion support</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toasts (for copy/share feedback) -->
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+
+  <!-- Modal (LevelUp: use for Add Stop / Winner spotlight) -->
+  <dialog id="appModal" class="modal" aria-labelledby="modalTitle">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <h3 id="modalTitle" class="modal-title">Modal Title</h3>
+        <button class="icon-btn" value="cancel" aria-label="Close dialog">
+          <svg><use href="#ico-close"/></svg>
+        </button>
+      </header>
+      <div class="modal-body" id="modalBody">
+        <!-- Dynamic content -->
+      </div>
+      <footer class="modal-foot">
+        <button class="btn" value="cancel">Cancel</button>
+        <button class="btn primary" value="ok">OK</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <footer class="site-foot">
+    <p>© <span id="year"></span> Skullcapz. All riffs reserved.</p>
+    <nav aria-label="Footer">
+      <a href="#hero">Back to top</a>
+      <a href="https://cashmerecode.github.io/WD-LL9-demo/">Live Site</a>
+      <a href="https://github.com/cashmerecode/WD-LL9-demo">Repository</a>
+    </nav>
+  </footer>
+
+  <!-- Main Script (we’ll add contents next) -->
+  <script src="script.js" defer></script>
 </body>
 </html>
